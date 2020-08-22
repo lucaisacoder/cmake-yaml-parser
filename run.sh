@@ -4,99 +4,48 @@ TARGET_MODULE_NAME="cmake-yaml-parser"
 TARGET_BUILD_FOLDER=$(pwd)/build
 TARGET_INSTALL_FOLDER=$(pwd)/installed
 
-# build module_name build_folder exit_flag
+TEST_MODULE_NAME="cyp-test"
+TEST_BUILD_FOLDER=$(pwd)/test/build
+
+# build
 build()
 {
-    _MODULE_NAME=$1
-    _BUILD_FOLDER=$2
-    _EXIT_FLAG=$3
-
     if [ -d ${TARGET_INSTALL_FOLDER} ]; then
         rm -rf ${TARGET_INSTALL_FOLDER}
     fi
 
-    if [ -d ${_BUILD_FOLDER} ]; then
-        rm -rf ${_BUILD_FOLDER}
+    if [ -d ${TARGET_BUILD_FOLDER} ]; then
+        rm -rf ${TARGET_BUILD_FOLDER}
     fi
-    mkdir ${_BUILD_FOLDER} && cd ${_BUILD_FOLDER}
+    mkdir ${TARGET_BUILD_FOLDER} && cd ${TARGET_BUILD_FOLDER}
 
     cmake .. -DCMAKE_INSTALL_PREFIX=${TARGET_INSTALL_FOLDER} -DCMAKE_PREFIX_PATH=${TARGET_INSTALL_FOLDER} && make install
 
     if [ $? -ne 0 ]; then
-        echo "build ${_MODULE_NAME} FAILED!"
+        echo "build ${TARGET_MODULE_NAME} FAILED!"
         exit 1
     fi
-    echo "build ${_MODULE_NAME} SUCCESS!"
-
-    if [[ ${_EXIT_FLAG} -eq 1 ]]; then
-        exit 0
-    fi
+    echo "build ${TARGET_MODULE_NAME} SUCCESS!"
 }
 
-# build module_name build_folder exit_flag
+# build
 build_test()
 {
-    _MODULE_NAME=$1
-    _BUILD_FOLDER=$2
-    _EXIT_FLAG=$3
-
-    if [ -d ${_BUILD_FOLDER} ]; then
-        rm -rf ${_BUILD_FOLDER}
+    if [ -d ${TEST_BUILD_FOLDER} ]; then
+        rm -rf ${TEST_BUILD_FOLDER}
     fi
-    mkdir ${_BUILD_FOLDER} && cd ${_BUILD_FOLDER}
+    mkdir ${TEST_BUILD_FOLDER} && cd ${TEST_BUILD_FOLDER}
 
     cmake .. -DCMAKE_INSTALL_PREFIX=${TARGET_INSTALL_FOLDER} -DCMAKE_PREFIX_PATH=${TARGET_INSTALL_FOLDER}
 
     if [ $? -ne 0 ]; then
-        echo "build ${_MODULE_NAME} FAILED!"
+        echo "build ${TEST_MODULE_NAME} FAILED!"
         exit 1
     fi
-    echo "build ${_MODULE_NAME} SUCCESS!"
-
-    if [[ ${_EXIT_FLAG} -eq 1 ]]; then
-        exit 0
-    fi
+    echo "build ${TEST_MODULE_NAME} SUCCESS!"
 }
 
-# build module_name build_folder exit_flag
-clean()
-{
-    _MODULE_NAME=$1
-    _BUILD_FOLDER=$2
-    _EXIT_FLAG=$3
-
-    if [ ! -d ${_BUILD_FOLDER} ]; then
-        echo "YOU NEED RUN './run.sh --build' FIRST"
-        return 0
-    fi
-    cd ${_BUILD_FOLDER}
-
-    make clean
-
-    if [ $? -ne 0 ]; then
-        echo "clean ${_MODULE_NAME} FAILED!"
-        exit 1
-    fi
-    echo "clean ${_MODULE_NAME} SUCCESS!"
-
-    if [[ ${_EXIT_FLAG} -eq 1 ]]; then
-        exit 0
-    fi
-}
-
-# rebuild module_name build_folder
-rebuild()
-{
-    _MODULE_NAME=$1
-    _BUILD_FOLDER=$2
-
-    clean ${_MODULE_NAME} ${_BUILD_FOLDER}
-    build ${_MODULE_NAME} ${_BUILD_FOLDER}
-
-    exit 0
-}
-
-# distclean module_name build_folder exit_flag
+# distclean
 distclean()
 {
     _MODULE_NAME=$1
@@ -107,33 +56,45 @@ distclean()
         rm -rf ${TARGET_INSTALL_FOLDER}
     fi
 
-    if [ -d ${_BUILD_FOLDER} ]; then
-        rm -rf ${_BUILD_FOLDER}
+    if [ -d ${TARGET_BUILD_FOLDER} ]; then
+        rm -rf ${TARGET_BUILD_FOLDER}
     fi
 
     if [ $? -ne 0 ]; then
-        echo "distclean ${_MODULE_NAME} FAILED!"
+        echo "distclean ${TARGET_MODULE_NAME} FAILED!"
         exit 0
     fi
-    echo "distclean ${_MODULE_NAME} SUCCESS!"
+    echo "distclean ${TARGET_MODULE_NAME} SUCCESS!"
     if [[ ${_EXIT_FLAG} -eq 1 ]]; then
         exit 0
     fi
 }
 
+# distclean_test
+distclean_test()
+{
+
+    if [ -d ${TEST_BUILD_FOLDER} ]; then
+        rm -rf ${TEST_BUILD_FOLDER}
+    fi
+
+    if [ $? -ne 0 ]; then
+        echo "distclean ${TEST_MODULE_NAME} FAILED!"
+        exit 0
+    fi
+    echo "distclean ${TEST_MODULE_NAME} SUCCESS!"
+}
+
 # test
 test()
 {
-    TEST_MODULE_NAME="cyp-test"
-    TEST_BUILD_FOLDER=$(pwd)/test/build
+    distclean
+    distclean_test
 
-    distclean ${TEST_MODULE_NAME} ${TEST_BUILD_FOLDER}
-    distclean ${TARGET_MODULE_NAME} ${TARGET_BUILD_FOLDER}
+    build
+    build_test
 
-    build ${TARGET_MODULE_NAME} ${TARGET_BUILD_FOLDER}
-    build_test ${TEST_MODULE_NAME} ${TEST_BUILD_FOLDER}
-
-    #cd ${TEST_BUILD_FOLDER}
+    cd ${TEST_BUILD_FOLDER}
 
     make test
 
@@ -143,8 +104,8 @@ test()
         ret=0
     fi
 
-    distclean ${TEST_MODULE_NAME} ${TEST_BUILD_FOLDER}
-    distclean ${TARGET_MODULE_NAME} ${TARGET_BUILD_FOLDER}
+    distclean
+    distclean_test
 
     if [[ ${ret} -ne 0 ]]; then
         echo "test FAILED!"
@@ -175,22 +136,12 @@ key="$1"
 
 case $key in
     -b|--build)
-    build ${TARGET_MODULE_NAME} ${TARGET_BUILD_FOLDER} 1
-    shift
-    shift
-    ;;
-    -r|--rebuild)
-    rebuild ${TARGET_MODULE_NAME} ${TARGET_BUILD_FOLDER}
-    shift
-    shift
-    ;;
-    -c|--clean)
-    clean ${TARGET_MODULE_NAME} ${TARGET_BUILD_FOLDER} 1
+    build
     shift
     shift
     ;;
     -d|--distclean)
-    distclean ${TARGET_MODULE_NAME} ${TARGET_BUILD_FOLDER} 1
+    distclean
     shift
     shift
     ;;
