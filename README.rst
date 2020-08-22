@@ -17,7 +17,6 @@ Usage
 License
 ==========
 cmake-yaml-parser is distributed under Apache license 2.0
+see `LICENSE`_ for details.
 
-see 'LICENSE' for details.
-
-.. 'LICENSE': LICENSE
+.. _`LICENSE`: LICENSE
