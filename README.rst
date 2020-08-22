@@ -8,9 +8,7 @@ a YAML format file analysis tool based on CMake.
 
 Introduction
 ==========
-The cmake-yaml-parser is a yaml file analysis tool.
-
-The cmake-yaml-parser is implemented in CMake language, so you could integrate it in your CMakelists.txt easily.
+cmake-yaml-parser is a YAML format file analysis tool implemented in CMake language, so you could integrate it in your CMakelists.txt easily.
 
 
 Compatibility
@@ -27,7 +25,7 @@ API Documentation
 
 License
 ==========
-The cmake-yaml-parser is distributed under Apache license 2.0.
+cmake-yaml-parser is distributed under Apache license 2.0.
 
 see `LICENSE`_ for details.
 
