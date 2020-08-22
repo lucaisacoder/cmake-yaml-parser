@@ -50,6 +50,7 @@ set(_cyp_flow_indicator ${_cyp_collect_entry}
 )
 
 set(_cyp_s_space        " ")
+set(_cyp_none_word_char ${_cyp_indicator} ${_cyp_s_space})
 
 # * n
 set(_cyp_indent_level0 "")
@@ -69,3 +70,8 @@ set(_cyp_second_tag             "!!")
 
 set(_cyp_e_scalar               "")
 set(_cyp_e_conver               "\\")
+
+
+# custom
+set(_cyp_custom_include_yaml_file   "!include")
+set(_cyp_custom_get_environ         "!env")
