@@ -5,5 +5,6 @@ project(parser-test)
 
 find_package(cmake-yaml-parser REQUIRED)
 
-include(cyp-test)
-cyp_test()
+include(cyp)
+set(yaml_file ${CMAKE_CURRENT_LIST_DIR}/test.yaml)
+cyp_load(${yaml_file})
