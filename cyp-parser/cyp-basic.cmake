@@ -1,0 +1,37 @@
+include(cyp-define)
+
+macro(cyp_init)
+    set(global_index 0)
+    set(global_yaml_string "")
+    set(global_yaml_string_length 0)
+    set(global_char "")
+    set(global_word "")
+    set(global_word_last "")
+
+    set(global_line_indent "0")
+endmacro(cyp_init)
+
+macro(cyp_print _string)
+    message("[DEBUG] ${_string}")
+endmacro(cyp_print)
+
+macro(cyp_goto_next_char)
+    math(EXPR global_index "${global_index} + 1")
+endmacro(cyp_goto_next_char)
+
+macro(cyp_get_char)
+    string(SUBSTRING "${global_yaml_string}" ${global_index} 1 global_char)
+    cyp_goto_next_char()
+endmacro(cyp_get_char)
+
+macro(cyp_get_word)
+    while(${global_index} LESS ${global_yaml_string_length})
+        string(SUBSTRING "${global_yaml_string}" ${global_index} 1 _char)
+        if(NOT ${_char} IN_LIST _cyp_none_word_char)
+            string(APPEND global_word ${_char})
+        else()
+            break()
+        endif()
+        cyp_goto_next_char()
+    endwhile()
+endmacro(cyp_get_word)

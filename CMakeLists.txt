@@ -13,6 +13,7 @@ install(TARGETS ${PROJECT_NAME}
 install(EXPORT ${PROJECT_NAME}Targets DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 # TODO: folder list
+list(APPEND _cyp_dirs "${CMAKE_CURRENT_LIST_DIR}/cyp-python")
 list(APPEND _cyp_dirs "${CMAKE_CURRENT_LIST_DIR}/cyp-parser")
 list(APPEND _cyp_dirs "${CMAKE_CURRENT_LIST_DIR}/cyp-test")
 #list(APPEND _cyp_dirs "${CMAKE_CURRENT_LIST_DIR}/cyp-xxx")
@@ -20,7 +21,7 @@ list(APPEND _cyp_dirs "${CMAKE_CURRENT_LIST_DIR}/cyp-test")
 
 # install folder list
 foreach(_dir ${_cyp_dirs})
-    install(DIRECTORY ${_dir} DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME} PATTERN "*.cmake")
+    install(DIRECTORY ${_dir} DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME} PATTERN "*.cmake" PATTERN "*.py")
     set(__cyp_dirs "${__cyp_dirs} ${_dir}")
 endforeach()
 
