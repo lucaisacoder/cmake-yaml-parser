@@ -28,7 +28,6 @@ class YamlParser(object):
         except FileNotFoundError:
             print("error: no such a file: {}".format(yaml_filename))
             raise
-        print(self._yaml)
 
     def output_file(self, file_type, filename):
         if file_type == self.OUTPUT_FILE_TYPE_CMAKE:
@@ -36,8 +35,27 @@ class YamlParser(object):
 
     def _output_cmake_file(self, filename):
         with open(filename, 'w') as file_handler:
-            file_handler.write("set(CYP_VERSION \"{}\")".format(self.CYP_VERSION))
+            ret = "set(CYP_VERSION \"{}\")\n".format(self.CYP_VERSION)
+            ret = ret + self._unfold_obj("yaml", self._yaml)
+            file_handler.write(ret)
         print("write file {}".format(filename))
+
+    def _unfold_obj(self, name, obj):
+        ret = ""
+        if type(obj).__name__ == 'dict':
+            _index = 0
+            for item in obj.items():
+                ret = ret + self._unfold_obj(name="{}.{}.{}".format(name, _index, item[0]), obj=item[1])
+                _index += 1
+        elif type(obj).__name__ == 'list':
+            for item in obj:
+                ret = ret + self._unfold_obj(name=name, obj=item)
+        # elif type(item).__name__ == 'set':
+        #     self._unfolder_set(name=item[0], list=item[1])
+        else:
+            ret = "set({} \"{}\")\n".format(str(name).upper(), obj)
+            print(ret)
+        return ret
 
 if "__main__" == __name__:
     # input param
