@@ -1,10 +1,10 @@
-include(cyp-basic)
+include(cyp_basic)
 
 
 macro(cyp_init _filename)
     find_package(PythonInterp REQUIRED)
-    set(_cyp_parser_script_name "cyp-parser.py")
-    set(_output_filename "cyp-inc.cmake")
+    set(_cyp_parser_script_name "cyp_parser.py")
+    set(_output_filename "cyp_inc.cmake")
 
     find_file(_cyp_output_filename
         NAMES "${_output_filename}"
@@ -40,8 +40,8 @@ macro(cyp_init _filename)
         NAMES "${_output_filename}"
         PATHS ${CMAKE_CURRENT_SOURCE_DIR})
     if(EXISTS ${_cyp_output_filename})
-        include(cyp-inc.cmake)
+        include(cyp_inc.cmake)
     else()
-        cyp_print("Failed to load cyp-inc.cmake!")
+        cyp_print("Failed to load cyp_inc.cmake!")
     endif()
 endmacro(cyp_init)

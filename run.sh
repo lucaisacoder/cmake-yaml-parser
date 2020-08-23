@@ -6,7 +6,7 @@ TARGET_INSTALL_FOLDER=$(pwd)/installed
 
 TARGET_RELEASE_FOLDER=$(pwd)/release
 
-TEST_MODULE_NAME="cyp-test"
+TEST_MODULE_NAME="cyp_test"
 TEST_BUILD_FOLDER=$(pwd)/test/build
 
 # build
@@ -133,6 +133,17 @@ test()
     exit 0
 }
 
+ut_test()
+{
+   _UT_TEST_FOLDER=$(pwd)/cyp_test
+
+    cd ${_UT_TEST_FOLDER}
+    echo "$(pwd)"
+    ./ut_cyp_python.py
+
+    exit 0
+}
+
 
 while [[ $# -gt 0 ]]
 do
@@ -156,6 +167,11 @@ case $key in
     ;;
     --dist)
     dist
+    shift
+    shift
+    ;;
+    -u|--ut)
+    ut_test
     shift
     shift
     ;;

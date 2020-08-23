@@ -1,4 +1,4 @@
-include(cyp-define)
+include(cyp_define)
 
 macro(cyp_init)
     set(global_index 0)

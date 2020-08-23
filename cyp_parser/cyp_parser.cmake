@@ -1,5 +1,5 @@
-include(cyp-define)
-include(cyp-basic)
+include(cyp_define)
+include(cyp_basic)
 
 macro(cyp_parser_char)
     if(DEFINED global_char)
