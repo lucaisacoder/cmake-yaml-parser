@@ -84,6 +84,7 @@ distclean_test()
         echo "distclean ${TEST_MODULE_NAME} FAILED!"
         exit 0
     fi
+
     echo "distclean ${TEST_MODULE_NAME} SUCCESS!"
 }
 
