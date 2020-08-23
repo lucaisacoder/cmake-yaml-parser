@@ -21,6 +21,7 @@ CYPLoader.add_constructor('!include', CYPLoader.include)
 class YamlParser(object):
     CYP_VERSION="0.1.1"
     OUTPUT_FILE_TYPE_CMAKE="cmake file"
+    ROOT_FLAG=0
     def __init__(self, yaml_filename):
         try:
             with open(yaml_filename, 'r') as file_handler:
@@ -41,15 +42,31 @@ class YamlParser(object):
         print("write file {}".format(filename))
 
     def _unfold_obj(self, name, obj):
+        self.ROOT_FLAG += 1
         ret = ""
         if type(obj).__name__ == 'dict':
-            _index = 0
             for item in obj.items():
-                ret = ret + self._unfold_obj(name="{}.{}.{}".format(name, _index, item[0]), obj=item[1])
-                _index += 1
+                if self.ROOT_FLAG == 1:
+                    _name = "{}".format(item[0])
+                else:
+                    _name = "{}.{}".format(name, item[0])
+
+                #else:
+                #    _name = "{}.{}.{}".format(name, self.ROOT_FLAG, item[0])
+                ret = ret + self._unfold_obj(name=_name, obj=item[1])
         elif type(obj).__name__ == 'list':
+            _ret = ""
             for item in obj:
-                ret = ret + self._unfold_obj(name=name, obj=item)
+                if type(item).__name__ == 'dict':
+                    for subitem in item.items():
+                        _name = "{}.{}".format(name, subitem[0])
+                        _ret = _ret + self._unfold_obj(name=_name, obj=subitem[1])
+                else:
+                    if len(_ret) > 0:
+                        _ret += ";"
+                    _ret = _ret + str(item) + ";"
+            ret = ret + _ret
+                # ret = ret + self._unfold_obj(name=name, obj=item)
         # elif type(item).__name__ == 'set':
         #     self._unfolder_set(name=item[0], list=item[1])
         else:
