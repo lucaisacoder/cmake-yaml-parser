@@ -4,6 +4,8 @@ TARGET_MODULE_NAME="cmake-yaml-parser"
 TARGET_BUILD_FOLDER=$(pwd)/build
 TARGET_INSTALL_FOLDER=$(pwd)/installed
 
+TARGET_RELEASE_FOLDER=$(pwd)/release
+
 TEST_MODULE_NAME="cyp-test"
 TEST_BUILD_FOLDER=$(pwd)/test/build
 
@@ -85,6 +87,18 @@ distclean_test()
     echo "distclean ${TEST_MODULE_NAME} SUCCESS!"
 }
 
+# dist version version exit_flag
+dist()
+{
+    cd ${TARGET_BUILD_FOLDER}
+    cpack
+
+    if [ ! -d ${TARGET_RELEASE_FOLDER} ]; then
+        mkdir ${TARGET_RELEASE_FOLDER}
+    fi
+    cp ./cmake-yaml-parser-*.tar.gz ${TARGET_RELEASE_FOLDER}/
+}
+
 # test
 test()
 {
@@ -96,7 +110,7 @@ test()
 
     cd ${TEST_BUILD_FOLDER}
 
-    make test
+    #make test
 
     if [[ $? -ne 0 ]]; then
         ret=1
@@ -104,29 +118,18 @@ test()
         ret=0
     fi
 
-    distclean
-    distclean_test
-
     if [[ ${ret} -ne 0 ]]; then
         echo "test FAILED!"
         exit 1
     else
         echo "test PASS!"
-        exit 0
+        dist
     fi
-}
 
-# dist version version exit_flag
-dist()
-{
-    _VERSION = $1
-    _EXIT_FLAG=$3
+    distclean
+    distclean_test
 
-    #make pack
-
-    if [[ ${_EXIT_FLAG} -eq 1 ]]; then
-        exit 0
-    fi
+    exit 0
 }
 
 
